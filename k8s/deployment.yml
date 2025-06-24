@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chaos-simulator-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: chaos-simulator-app
+  template:
+    metadata:
+      labels:
+        app: chaos-simulator-app
+    spec:
+      containers:
+      - name: chaos-simulator-app
+        image: rukasu/production-chaos-simulator:v2
+        ports:
+        - containerPort: 3000
+        # Se falhar, reinicie o container.
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          failureThreshold: 3
+          timeoutSeconds: 2
+        # Se falhar, não envie requisições para este pod até ele estar pronto.
+        readinessProbe:
+          httpGet:
+            port: 3000
+            path: /ready
+          failureThreshold: 3
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 2
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: chaos-sim-service
+spec:
+  selector:
+    app: chaos-simulator-app
+  type: NodePort
+  ports:
+  - port: 3000
+    targetPort: 3000
+    nodePort: 30000
+    protocol: TCP
