@@ -58,7 +58,6 @@ O **Simulador do Caos** é uma aplicação leve criada para simular cenários re
 docker build -t simulador-do-caos ./src
 docker run -p 3000:3000 --name simulador-do-caos simulador-do-caos
 ```
-```
 
 Acesse via navegador: [http://localhost:3000](http://localhost:3000)
 
@@ -66,7 +65,7 @@ Acesse via navegador: [http://localhost:3000](http://localhost:3000)
 
 ## 📁 Estrutura do Projeto
 
-```
+```bash
 ├── src
 │   ├── server.ts           # Servidor Express
 │   ├── views/index.ejs     # Interface HTML
